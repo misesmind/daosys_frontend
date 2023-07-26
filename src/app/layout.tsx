@@ -1,4 +1,6 @@
 import { Wrapper } from "@/components/Wrapper"
+import { Providers } from "./providers"
+import '@rainbow-me/rainbowkit/styles.css';
 
 export const metadata = {
   title: 'Next.js',
@@ -18,9 +20,11 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <Wrapper>
-          {children}
-        </Wrapper>
+        <Providers>
+          <Wrapper>
+            {children}
+          </Wrapper>
+        </Providers>
       </body>
     </html>
   )

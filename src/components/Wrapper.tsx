@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, useState } from 'react';
-
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -13,7 +13,7 @@ import Button from '@/components/Button';
 
 export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
     const [open, setOpen] = useState(false);
-
+    const { openConnectModal } = useConnectModal();
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -43,7 +43,7 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
                     >
                         DaoSYS UI
                     </Typography>
-                    <Button neon={true}>Connect Wallet</Button>
+                    <ConnectButton />
                 </Toolbar>
             </AppBar>
 

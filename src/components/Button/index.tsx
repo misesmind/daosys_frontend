@@ -1,3 +1,5 @@
+'use client'
+
 import { Button as MdButton, ButtonProps as MdButtonProps, keyframes, styled, css } from "@mui/material";
 import pulse from "../Animations/pulse";
 
