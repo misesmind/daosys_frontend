@@ -17,6 +17,7 @@ import {
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { injectedWallet } from '@rainbow-me/rainbowkit/wallets';
+import { Provider } from 'react-redux';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
@@ -49,14 +50,20 @@ const wagmiConfig = createConfig({
     publicClient,
 });
 
+import store from '@/store';
+
+
+
 export function Providers({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => setMounted(true), []);
     return (
-        <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-                {mounted && children}
-            </RainbowKitProvider>
-        </WagmiConfig>
+        <Provider store={store}>
+            <WagmiConfig config={wagmiConfig}>
+                <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
+                    {mounted && children}
+                </RainbowKitProvider>
+            </WagmiConfig>
+        </Provider>
     );
 }
