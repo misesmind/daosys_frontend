@@ -8,12 +8,16 @@ type CollectionItem = {
     createdAt: number | undefined,
 }
 
+interface CollectionMap {
+    [key: string]: CollectionItem
+}
+
 export interface CollectionsState {
-    items: CollectionItem[],
+    items: CollectionMap
 }
 
 const initialState: CollectionsState = {
-    items: [],
+    items: {},
 }
 
 export const collectionsSlice = createSlice({
@@ -21,7 +25,7 @@ export const collectionsSlice = createSlice({
     initialState,
     reducers: {
         addCollection: (state, action) => {
-            state.items.push(action.payload);
+            state.items[action.payload.name] = action.payload.collection;
         }
     }
 })

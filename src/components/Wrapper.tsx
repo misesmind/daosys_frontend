@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC, useState } from 'react';
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -10,30 +10,16 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@/components/AppBar';
 import Button from '@/components/Button';
+import { Select } from '@mui/material';
+import { useSelectedCollection } from '@/store/features/userPreferences/hooks/useSelectedCollection'
 
 export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [open, setOpen] = useState(false);
-    const { openConnectModal } = useConnectModal();
-    const toggleDrawer = () => {
-        setOpen(!open);
-    };
+    const { selectedCollection } = useSelectedCollection();
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" open={true}>
                 <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={toggleDrawer}
-                        sx={{
-                            marginRight: '36px',
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
                     <Typography
                         component="h1"
                         variant="h6"
@@ -43,6 +29,12 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
                     >
                         DaoSYS UI
                     </Typography>
+                    <Select
+                        value={selectedCollection}
+                        label="Collection"
+                    >
+
+                    </Select>
                     <ConnectButton />
                 </Toolbar>
             </AppBar>

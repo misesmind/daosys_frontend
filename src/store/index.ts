@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import collectionsSlice from './features/collections/collectionsSlice'
+import userPreferencesSlice from './features/userPreferences/userPreferencesSlice'
 
 export const store = configureStore({
     reducer: {
-        collectionsSlice
+        collectionsSlice,
+        userPreferencesSlice,
     },
 })
 
