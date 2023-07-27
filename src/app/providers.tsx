@@ -51,6 +51,8 @@ const wagmiConfig = createConfig({
 });
 
 import store from '@/store';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 
 
@@ -60,9 +62,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <Provider store={store}>
             <WagmiConfig config={wagmiConfig}>
-                <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
-                    {mounted && children}
-                </RainbowKitProvider>
+                <ThemeProvider theme={theme}>
+                    <RainbowKitProvider chains={chains} appInfo={demoAppInfo}>
+                        {mounted && children}
+                    </RainbowKitProvider>
+                </ThemeProvider>
             </WagmiConfig>
         </Provider>
     );

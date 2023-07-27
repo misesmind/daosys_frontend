@@ -10,8 +10,45 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@/components/AppBar';
 import Button from '@/components/Button';
-import { Select } from '@mui/material';
+import Select from '@/components/Select';
 import { useSelectedCollection } from '@/store/features/userPreferences/hooks/useSelectedCollection'
+import { Divider, Grid, Link, Stack } from '@mui/material';
+import Sidebar, { SidebarLink } from './Sidebar';
+import { Collections, History, HomeMini, House, LinkOff, LinkOutlined, Send, SwapCalls } from '@mui/icons-material';
+
+
+const sidebarLinks: SidebarLink[] = [
+    {
+        name: 'Home',
+        path: '/',
+        icon: <House />,
+    },
+    {
+        name: 'Deploy Contract',
+        path: '/deploy',
+        icon: <Send />,
+    },
+    {
+        name: 'Connect Contract',
+        path: '/connectContract',
+        icon: <LinkOutlined />,
+    },
+    {
+        name: 'Collections',
+        path: '/collections',
+        icon: <Collections />,
+    },
+    {
+        name: 'History',
+        path: '/history',
+        icon: <History />,
+    },
+    {
+        name: 'Import / Export data',
+        path: '/import-export',
+        icon: <SwapCalls />,
+    }
+]
 
 export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
     const { selectedCollection } = useSelectedCollection();
@@ -20,8 +57,10 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" open={true}>
                 <Toolbar>
+
+
                     <Typography
-                        component="h1"
+                        component="h6"
                         variant="h6"
                         color="inherit"
                         noWrap
@@ -29,23 +68,18 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
                     >
                         DaoSYS UI
                     </Typography>
-                    <Select
-                        value={selectedCollection}
-                        label="Collection"
-                    >
 
-                    </Select>
+
                     <ConnectButton />
+
                 </Toolbar>
             </AppBar>
 
             <Box
                 component="main"
                 sx={{
-                    backgroundColor: (theme) =>
-                        theme.palette.mode === 'light'
-                            ? theme.palette.grey[100]
-                            : theme.palette.grey[900],
+                    backgroundColor: (theme) => theme.palette.grey[100],
+                    boxShadow: '2px 2px 2px 2px #000066',
                     flexGrow: 1,
                     height: '100vh',
                     overflow: 'auto',
@@ -53,7 +87,17 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
             >
                 <Toolbar />
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                    {children}
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                            <Sidebar
+                                links={sidebarLinks}
+                            />
+                        </Grid>
+                        <Grid item xs={9}>
+                            {children}
+                        </Grid>
+                    </Grid>
+
                 </Container>
             </Box>
         </Box>

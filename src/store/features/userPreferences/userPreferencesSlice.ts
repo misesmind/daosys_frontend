@@ -7,7 +7,7 @@ export interface UserPreferencesState {
 
 const initialState: UserPreferencesState = {
     theme: 'dark',
-    selectedCollection: undefined,
+    selectedCollection: '',
 }
 
 export const userPreferencesSlice = createSlice({
