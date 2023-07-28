@@ -3,6 +3,7 @@
 import Box from '@/components/Box';
 import Button from '@/components/Button';
 import { AddCollectionModal } from '@/store/features/collections/components/AddCollectionModal';
+import { CollectionList } from '@/store/features/collections/components/List';
 import { Grid, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import React, { FC, useState } from 'react';
@@ -21,7 +22,7 @@ export const Index: NextPage = () => {
 
     return (
         <>
-            <Box>
+            <Box mb={2}>
                 <Grid container spacing={2}>
                     <Grid xs={9} item>
                         <Typography variant='h4'>
@@ -36,7 +37,7 @@ export const Index: NextPage = () => {
                 </Grid>
             </Box>
 
-
+            <CollectionList />
 
             <AddCollectionModal open={open} onClose={handleClose} />
         </>

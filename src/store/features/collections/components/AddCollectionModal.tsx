@@ -80,6 +80,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({ open, onClose 
                                 variant="outlined"
                                 helperText={error ?? 'Enter a name for your collection'}
                                 onChange={handleChange}
+                                value={collectionName}
                                 error={error !== ''}
                             />
                         </FormControl>
