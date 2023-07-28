@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { useAppSelector } from "@/store/hooks";
-import { Box } from "@/components/Box";
 import { Grid, TableCell, TableRow, Typography } from "@mui/material";
 import { BaseTable } from "@/components/DataPresenter";
-import { Edit, Switch } from "@/components/ActionButtons";
+import { Switch } from "@/components/ActionButtons";
 import useSelectedCollection from "../../userPreferences/hooks/useSelectedCollection";
 
 export const CollectionList: FC = () => {

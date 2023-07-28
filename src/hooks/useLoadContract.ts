@@ -7,6 +7,10 @@ export const useLoadContract = (
     options?: any
 ) => {
     const client = usePublicClient();
+    const wallet = useWalletClient();
+
+    const [contract, setContract] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
 
 
