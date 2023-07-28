@@ -8,24 +8,20 @@ import {
 
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    zora,
     goerli,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { injectedWallet } from '@rainbow-me/rainbowkit/wallets';
 import { Provider } from 'react-redux';
+import { rollux } from '@/networks/rollux';
+import store from '@/store';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
+
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
-        mainnet,
-        polygon,
-        optimism,
-        arbitrum,
-        zora,
+        rollux,
         ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
     ],
     [publicProvider()]
@@ -49,12 +45,6 @@ const wagmiConfig = createConfig({
     connectors,
     publicClient,
 });
-
-import store from '@/store';
-import { ThemeProvider } from '@mui/material';
-import theme from './theme';
-
-
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = React.useState(false);
