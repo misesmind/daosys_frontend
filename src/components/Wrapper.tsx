@@ -14,7 +14,7 @@ import Select from '@/components/Select';
 import { useSelectedCollection } from '@/store/features/userPreferences/hooks/useSelectedCollection'
 import { Divider, Grid, Link, Stack } from '@mui/material';
 import Sidebar, { SidebarLink } from './Sidebar';
-import { Collections, History, HomeMini, House, LinkOff, LinkOutlined, Send, SwapCalls } from '@mui/icons-material';
+import { Collections, History, HomeMini, House, LinkOff, LinkOutlined, Send, Settings, SwapCalls } from '@mui/icons-material';
 
 
 const sidebarLinks: SidebarLink[] = [
@@ -47,6 +47,11 @@ const sidebarLinks: SidebarLink[] = [
         name: 'Import / Export data',
         path: '/import-export',
         icon: <SwapCalls />,
+    },
+    {
+        name: 'Settings',
+        path: '/settings',
+        icon: <Settings />,
     }
 ]
 
@@ -86,7 +91,7 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
                 }}
             >
                 <Toolbar />
-                <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                <Container maxWidth={'lg'} sx={{ mt: 4, mb: 4 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
                             <Sidebar
