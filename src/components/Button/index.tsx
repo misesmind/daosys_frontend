@@ -10,7 +10,7 @@ export interface ButtonProps extends MdButtonProps {
 const Button = styled(MdButton, { shouldForwardProp: (prop) => prop !== 'neon' })<ButtonProps>(
     ({ theme, neon }) => ({
         backgroundColor: neon ? '#000099' : '#000033',
-        boxShadow: '2px 2px 2px 2px #000066',
+        boxShadow: '2px 2px 2px 2px black',
         zIndex: theme.zIndex.drawer + 1,
         color: neon ? '#00FF00' : '#FFFFFF',
         transition: theme.transitions.create(['width', 'margin'], {

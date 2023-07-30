@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme } from "@mui/material"
 import { useRouter, usePathname } from "next/navigation";
 import React, { FC } from "react"
 
@@ -20,6 +20,9 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
     const router = useRouter();
     const pathname = usePathname();
 
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('md'));
+
     const handleClick = (link: SidebarLink) => {
         router.push(link.path);
     };
@@ -29,7 +32,7 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
             flexGrow: 1,
             border: '1px solid rgba(0, 0, 0, 0.2)',
             boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
-        }}>
+        }} >
             <List component={"nav"} aria-label="main list daosys"
             >
                 {links && links.map((link, index) => (

@@ -12,7 +12,7 @@ import AppBar from '@/components/AppBar';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
 import { useSelectedCollection } from '@/store/features/userPreferences/hooks/useSelectedCollection'
-import { Divider, Grid, Link, Stack } from '@mui/material';
+import { Divider, Grid, Link, Stack, useMediaQuery, useTheme } from '@mui/material';
 import Sidebar, { SidebarLink } from './Sidebar';
 import { Collections, History, HomeMini, House, LinkOff, LinkOutlined, Send, Settings, SwapCalls } from '@mui/icons-material';
 
@@ -58,6 +58,9 @@ const sidebarLinks: SidebarLink[] = [
 export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
     const { selectedCollection } = useSelectedCollection();
 
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" open={true}>
@@ -93,12 +96,12 @@ export const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
                 <Toolbar />
                 <Container maxWidth={'lg'} sx={{ mt: 4, mb: 4 }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3}>
+                        <Grid item xs={matches ? 12 : 3}>
                             <Sidebar
                                 links={sidebarLinks}
                             />
                         </Grid>
-                        <Grid item xs={9}>
+                        <Grid item xs={matches ? 12 : 9}>
                             {children}
                         </Grid>
                     </Grid>
