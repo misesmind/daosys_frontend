@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import collectionsSlice from './features/collections/collectionsSlice'
 import userPreferencesSlice from './features/userPreferences/userPreferencesSlice'
+import contractsSlice from './features/contracts/contractsSlice'
 
 export const store = configureStore({
     reducer: {
         collectionsSlice,
         userPreferencesSlice,
+        contractsSlice,
     },
 })
 
