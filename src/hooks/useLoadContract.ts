@@ -2,7 +2,8 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { useWalletClient, usePublicClient } from "wagmi";
 import { MetadataSources, getMetadataFromAddress } from "@ethereum-sourcify/contract-call-decoder";
 import { EthereumProvider } from "ethereum-provider";
-import { isAddress } from "viem";
+import { GetContractReturnType, isAddress } from "viem";
+import { getContract } from "viem";
 
 export type ContractLoadingState =
     'none' |
@@ -22,7 +23,7 @@ export const useLoadContract = (
     const wallet = useWalletClient();
 
     const [loadingState, setLoadingState] = useState<ContractLoadingState>('none');
-    const [abi, setAbi] = useState<any>();
+    const [contract, setContract] = useState<GetContractReturnType | undefined>(undefined);
 
     useEffect(() => {
         if (!isAddress(contractAddress)) {
@@ -33,14 +34,31 @@ export const useLoadContract = (
     }, [contractAddress]);
 
 
-    const loadContractMetadata = useCallback(async (metadataSource: MetadataSources) => {
+    const loadContract = useCallback(async (contractAddress: string, manualAbi: string) => {
+        try {
+            console.log(manualAbi);
+            setLoadingState('loading-contract');
+            const contract = getContract({
+                address: contractAddress,
+                abi: manualAbi,
+                walletClient: wallet,
+            });
+            setLoadingState('contract-loaded');
+            setContract(contract);
+            return contract;
+        } catch (e) {
+            console.log(e);
+            setLoadingState('contract-error');
+        }
+    }, [wallet]);
 
-        let abi = null;
+
+    const loadContractMetadata = useCallback(async (metadataSource: MetadataSources, chainId: number) => {
 
         const metadataFetchPayload = {
             address: contractAddress,
             source: metadataSource,
-            ...(metadataSource === MetadataSources.Sourcify ? { chainId: await client.getChainId() } : {}),
+            ...(metadataSource === MetadataSources.Sourcify ? { chainId: chainId } : {}),
             ...(metadataSource === MetadataSources.BytecodeMetadata ? { rpcProvider: client as unknown as EthereumProvider } : {}),
         }
 
@@ -53,9 +71,11 @@ export const useLoadContract = (
                 setLoadingState('metadata-not-found');
             } else {
                 setLoadingState('loading-abi');
-                abi = metadata.abi;
-                setAbi(abi);
+
+                const abi = metadata.output.abi;
                 setLoadingState('contract-loaded');
+
+                loadContract(contractAddress, abi);
             }
         } catch (e) {
             console.log(e);
@@ -63,11 +83,15 @@ export const useLoadContract = (
         }
 
         console.log(loadingState);
-    }, [client, contractAddress, loadingState]);
+    }, [client, contractAddress, loadContract, loadingState]);
+
+
 
     return useMemo(() => ({
         loadingState,
         loadContractMetadata,
-    }), [loadingState, loadContractMetadata]);
+        loadContract,
+        contract
+    }), [loadingState, loadContractMetadata, loadContract, contract]);
 
 }

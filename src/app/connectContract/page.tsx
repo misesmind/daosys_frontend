@@ -5,23 +5,45 @@ import Button from '@/components/Button';
 import Select from '@/components/Select';
 import { useLoadContract } from '@/hooks/useLoadContract';
 import { MetadataSources } from '@ethereum-sourcify/contract-call-decoder';
-import { FormControl, Grid, InputLabel, MenuItem, TextField, Typography } from '@mui/material';
+import { FormControl, Grid, Input, InputLabel, MenuItem, TextField, TextareaAutosize, Typography } from '@mui/material';
 import { NextPage } from 'next';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { usePublicClient } from 'wagmi';
 
 
 export const Index: NextPage = () => {
     const [address, setAddress] = useState<string>('')
+    const [chainId, setChainId] = useState<number>(0)
+    const [manualAbi, setManualAbi] = useState<string>('')
     const {
         loadContractMetadata,
-        loadingState
+        loadingState,
+        loadContract,
+        contract
     } = useLoadContract(address);
 
-    const [metadataSource, setMetadataSource] = useState<number>(0);
+    const client = usePublicClient();
 
-    const handleLoad = () => {
-        loadContractMetadata(metadataSource);
+    useEffect(() => {
+        const getChainId = async () => {
+            const chainId = await client.getChainId();
+            setChainId(chainId);
+        }
+
+        getChainId();
+    }, [client]);
+
+    const [metadataSource, setMetadataSource] = useState<number | string>('');
+
+    const handleLoad = async () => {
+        if (loadingState === 'metadata-not-found') {
+            loadContract(address, manualAbi);
+        } else {
+            loadContractMetadata(metadataSource as unknown as MetadataSources, chainId);
+        }
     }
+
+
 
 
 
@@ -52,25 +74,66 @@ export const Index: NextPage = () => {
                             labelId='metadata-source-label'
                             onChange={(e) => setMetadataSource(parseInt(e.target.value as string))}
                             id='metadata-source'
+                            value={metadataSource}
                             label='Metadata source'
-                            defaultValue={metadataSource}
+
                         >
+                            <MenuItem value="" defaultChecked disabled>Select metadata source</MenuItem>
                             <MenuItem value="0">Sourcify</MenuItem>
                             <MenuItem value="1">Bytecode</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
+                <Grid xs={4} item>
+                    <FormControl fullWidth sx={{ mt: 3 }}>
+                        <TextField
+                            onChange={(e) => setChainId(isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value))}
+                            value={chainId}
+                            id="chain-id"
+                            label="Chain ID"
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </FormControl>
+                </Grid>
             </Grid>
 
+            {loadingState === 'metadata-not-found' &&
+                (<>
+                    <TextField
+                        multiline
+                        rows={5}
+                        sx={{ mt: 3 }}
+                        id="outlined-basic"
+                        label="Paste ABI"
+                        variant="outlined"
+                        fullWidth
+                    />
+                </>)
+            }
 
-            {loadingState === 'none' && (<>
+
+            {loadingState !== 'contract-loaded' && <>
                 <Button neon fullWidth sx={{ mt: 3, background: 'primary.main', color: 'white' }}
                     disabled={address === ''}
                     onClick={handleLoad}
                 >
-                    Connect
+                    {(loadingState === 'none' || loadingState === 'invalid-address') ? 'Connect' :
+                        loadingState === 'metadata-not-found' ? 'Load ABI' : ''
+                    }
                 </Button>
-            </>)}
+            </>}
+
+
+            {loadingState === 'contract-loaded' && <>
+                <Typography variant='h5' sx={{ mt: 3 }}>
+                    Contract loaded
+                </Typography>
+                <Typography variant='body1' sx={{ mt: 3 }}>
+                    {contract?.address}
+                </Typography>
+            </>}
+
 
         </Box >
     </>);
