@@ -19,7 +19,7 @@ const _modalStyles = {
     backgroundColor: '#fefefe',
 };
 
-export const Box = styled(MdBox)<BoxProps>(({ theme, isModal }) => ({
+export const Box = styled(MdBox, { shouldForwardProp: prop => prop !== 'isModal' })<BoxProps>(({ theme, isModal }) => ({
     border: '1px solid rgba(0, 0, 0, 0.2)',
     boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
     padding: theme.spacing(2),

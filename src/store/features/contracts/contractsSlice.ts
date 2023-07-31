@@ -10,7 +10,7 @@ export type ContractItem = {
     createdAt: number | undefined,
 }
 
-const initialState: {
+export const initialState: {
     items: { [key: string]: ContractItem } // key is contract address
 } = {
     items: {},

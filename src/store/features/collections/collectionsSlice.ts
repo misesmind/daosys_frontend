@@ -16,7 +16,7 @@ export interface CollectionsState {
     items: CollectionMap
 }
 
-const initialState: CollectionsState = {
+export const initialState: CollectionsState = {
     items: {},
 }
 

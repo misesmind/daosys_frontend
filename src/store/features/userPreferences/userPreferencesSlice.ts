@@ -5,7 +5,7 @@ export interface UserPreferencesState {
     selectedCollection: string | undefined,
 }
 
-const initialState: UserPreferencesState = {
+export const initialState: UserPreferencesState = {
     theme: 'dark',
     selectedCollection: '',
 }
