@@ -1,13 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Abi } from "viem";
+
 
 
 export type ContractItem = {
-    address: string;
-    abi: string | undefined,
-    tag: string | undefined,
-    name: string | undefined,
-    chainId: number | undefined,
-    createdAt: number | undefined,
+    // @ts-ignore
+    abi: typeof Abi;
 }
 
 export const initialState: {
@@ -20,7 +18,8 @@ export const contractsSlice = createSlice({
     name: 'contracts',
     initialState,
     reducers: {
-        addContract: (state, action) => {
+        addContract: (state, action: PayloadAction<{ address: string; contract: ContractItem }>) => {
+            console.log(action.payload);
             state.items[action.payload.address] = action.payload.contract;
         },
         removeContract: (state, action) => {
@@ -30,6 +29,6 @@ export const contractsSlice = createSlice({
     }
 })
 
-export const { addContract } = contractsSlice.actions;
+export const { addContract, removeContract } = contractsSlice.actions;
 
 export default contractsSlice.reducer;

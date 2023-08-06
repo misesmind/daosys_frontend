@@ -23,6 +23,12 @@ const Button = styled(MdButton, { shouldForwardProp: (prop) => prop !== 'neon' }
         '&:hover': {
             backgroundColor: neon ? '#0000FF' : '#000066'
         },
+        '&:disabled': {
+            backgroundColor: neon ? '#000099' : '#000033',
+            color: neon ? '#00FF00' : '#FFFFFF',
+            opacity: 0.5,
+            cursor: 'not-allowed',
+        },
     }),
 );
 

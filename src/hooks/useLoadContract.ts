@@ -4,6 +4,8 @@ import { MetadataSources, getMetadataFromAddress } from "@ethereum-sourcify/cont
 import { EthereumProvider } from "ethereum-provider";
 import { GetContractReturnType, isAddress } from "viem";
 import { getContract } from "viem";
+import { useAppDispatch } from "@/store/hooks";
+import { addContract } from "@/store/features/contracts/contractsSlice";
 
 export type ContractLoadingState =
     'none' |
@@ -22,6 +24,8 @@ export const useLoadContract = (
     const client = usePublicClient();
     const wallet = useWalletClient();
 
+    const dispatch = useAppDispatch();
+
     const [loadingState, setLoadingState] = useState<ContractLoadingState>('none');
     const [contract, setContract] = useState<GetContractReturnType | undefined>(undefined);
 
@@ -33,17 +37,35 @@ export const useLoadContract = (
         }
     }, [contractAddress]);
 
+    useEffect(() => {
+        if (contract) {
+            setLoadingState('contract-loaded');
+            dispatch(addContract({
+                address: contractAddress,
+                contract: {
+                    abi: contract.abi,
+                }
+            }));;
+        }
+    }, [contract, contractAddress, dispatch]);
+
+
 
     const loadContract = useCallback(async (contractAddress: string, manualAbi: string) => {
         try {
             console.log(manualAbi);
             setLoadingState('loading-contract');
+
             const contract = getContract({
+                //@ts-ignore
                 address: contractAddress,
+                //@ts-ignore
                 abi: manualAbi,
+                //@ts-ignore
                 walletClient: wallet,
             });
             setLoadingState('contract-loaded');
+            //@ts-ignore
             setContract(contract);
             return contract;
         } catch (e) {
@@ -91,7 +113,11 @@ export const useLoadContract = (
         loadingState,
         loadContractMetadata,
         loadContract,
-        contract
+        contract,
+        resetState: () => {
+            setLoadingState('none');
+            setContract(undefined);
+        }
     }), [loadingState, loadContractMetadata, loadContract, contract]);
 
 }

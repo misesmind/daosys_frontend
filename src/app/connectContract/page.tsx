@@ -5,7 +5,7 @@ import Button from '@/components/Button';
 import Select from '@/components/Select';
 import { useLoadContract } from '@/hooks/useLoadContract';
 import { MetadataSources } from '@ethereum-sourcify/contract-call-decoder';
-import { FormControl, Grid, Input, InputLabel, MenuItem, TextField, TextareaAutosize, Typography } from '@mui/material';
+import { Badge, Chip, FormControl, Grid, Input, InputLabel, MenuItem, TextField, TextareaAutosize, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import React, { FC, useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
@@ -19,7 +19,8 @@ export const Index: NextPage = () => {
         loadContractMetadata,
         loadingState,
         loadContract,
-        contract
+        contract,
+        resetState
     } = useLoadContract(address);
 
     const client = usePublicClient();
@@ -50,7 +51,7 @@ export const Index: NextPage = () => {
     return (<>
         <Box>
             <Typography variant='h5'>
-                Connect Contract - {loadingState}
+                Connect Contract - <Chip label={loadingState} />
             </Typography>
         </Box>
 
@@ -119,7 +120,7 @@ export const Index: NextPage = () => {
                     onClick={handleLoad}
                 >
                     {(loadingState === 'none' || loadingState === 'invalid-address') ? 'Connect' :
-                        loadingState === 'metadata-not-found' ? 'Load ABI' : ''
+                        loadingState === 'metadata-not-found' ? 'Load ABI' : 'Loading...'
                     }
                 </Button>
             </>}
@@ -130,8 +131,20 @@ export const Index: NextPage = () => {
                     Contract loaded
                 </Typography>
                 <Typography variant='body1' sx={{ mt: 3 }}>
-                    {contract?.address}
+                    You can use it in the workspace.
                 </Typography>
+
+                <Button neon fullWidth sx={{ mt: 3, background: 'primary.main', color: 'white' }}
+                    onClick={async () => {
+                        setAddress('');
+                        setMetadataSource('');
+                        setChainId(await client.getChainId() ?? 1);
+                        setManualAbi('');
+                        resetState();
+                    }}
+                >
+                    Load another contract
+                </Button>
             </>}
 
 
