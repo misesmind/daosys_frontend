@@ -19,7 +19,6 @@ export const Index: NextPage = () => {
         loadContractMetadata,
         loadingState,
         loadContract,
-        contract,
         resetState
     } = useLoadContract(address);
 

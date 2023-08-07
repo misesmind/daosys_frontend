@@ -4,6 +4,8 @@ import { useCallback, useMemo } from "react";
 export const useSelectedCollection = () => {
 
     const selectedCollection = useAppSelector((state) => state.userPreferencesSlice.selectedCollection);
+
+
     const dispatch = useAppDispatch();
 
     const changeCollection = useCallback((collection: string) => {
@@ -12,6 +14,7 @@ export const useSelectedCollection = () => {
             payload: collection,
         });
     }, [dispatch]);
+
 
     return useMemo(() => ({
         selectedCollection,

@@ -4,18 +4,21 @@ import { configureStore } from '@reduxjs/toolkit'
 import collectionsSlice, { initialState as collectionsInitialState } from './features/collections/collectionsSlice'
 import userPreferencesSlice, { initialState as userPreferencesInitialState } from './features/userPreferences/userPreferencesSlice'
 import contractsSlice, { initialState as contractsInitialState } from './features/contracts/contractsSlice'
+import tabsSlice, { initialState as tabsInitialState } from './features/tabs/tabsSlice'
 
 export const store = configureStore({
     reducer: {
         collectionsSlice,
         userPreferencesSlice,
         contractsSlice,
+        tabsSlice,
     },
     preloadedState: {
         ...(typeof localStorage !== 'undefined' ? {
             collectionsSlice: JSON.parse(localStorage!.getItem('redux::collections') || JSON.stringify(collectionsInitialState)),
             userPreferencesSlice: JSON.parse(localStorage!.getItem('redux::userPreferences') || JSON.stringify(userPreferencesInitialState)),
             contractsSlice: JSON.parse(localStorage!.getItem('redux::contracts') || JSON.stringify(contractsInitialState)),
+            tabsSlice: JSON.parse(localStorage!.getItem('redux::tabs') || JSON.stringify(tabsInitialState)),
         } : {})
     }
 });
@@ -25,6 +28,7 @@ store.subscribe(() => {
     localStorage!.setItem('redux::collections', JSON.stringify(store.getState().collectionsSlice))
     localStorage!.setItem('redux::userPreferences', JSON.stringify(store.getState().userPreferencesSlice))
     localStorage!.setItem('redux::contracts', JSON.stringify(store.getState().contractsSlice))
+    localStorage!.setItem('redux::tabs', JSON.stringify(store.getState().tabsSlice))
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

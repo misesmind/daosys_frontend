@@ -1,13 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { produce } from "immer";
 
 export interface UserPreferencesState {
     theme: string,
     selectedCollection: string | undefined,
+    selectedTab: string | number | undefined,
 }
 
 export const initialState: UserPreferencesState = {
     theme: 'dark',
     selectedCollection: '',
+    selectedTab: 'new',
 }
 
 export const userPreferencesSlice = createSlice({
@@ -19,10 +22,13 @@ export const userPreferencesSlice = createSlice({
         },
         setSelectedCollection: (state, action) => {
             state.selectedCollection = action.payload;
+        },
+        setSelectedTab: (state, action) => {
+            state.selectedTab = action.payload.id;
         }
     }
 });
 
-export const { setTheme, setSelectedCollection } = userPreferencesSlice.actions;
+export const { setTheme, setSelectedCollection, setSelectedTab } = userPreferencesSlice.actions;
 
 export default userPreferencesSlice.reducer;
