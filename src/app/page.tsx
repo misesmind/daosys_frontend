@@ -1,14 +1,11 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react';
-
-import Typography from '@mui/material/Typography';
 import { NextPage } from 'next';
 import { TabWithClose } from '@/components/TabWithClose';
-import { Button, Grid, Tab, Tabs } from '@mui/material';
+import { Grid, Tab, Tabs } from '@mui/material';
 import { TabViewer } from '@/store/features/tabs/components/TabViewer';
-import { Add, HdrPlus } from '@mui/icons-material';
-import { TabAdd } from '@/store/features/tabs/components/TabAdd';
+import { Add } from '@mui/icons-material';
 import useTabs from '@/store/features/tabs/hooks/useTabs';
 import useSelectedTab from '@/store/features/userPreferences/hooks/useSelectedTab';
 
@@ -93,7 +90,7 @@ export const Home: NextPage = () => {
             }}
             label='+' onClick={(e) => {
               e.preventDefault();
-              const createdTab = newTab();
+              newTab();
             }} />
         </Tabs>
       </Grid>
