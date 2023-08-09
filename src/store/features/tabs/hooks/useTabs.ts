@@ -28,8 +28,9 @@ export const useTabs = () => {
             contractAddress: '',
         });
 
+        let tabId = Math.max(...Object.keys(tabs).map(key => parseInt(key)));
 
-        return tabs.indexOf(tabs.find(tab => tab.id === id) as Tab);
+        return tabId + 1;
     }, [createTab, tabs]);
 
 

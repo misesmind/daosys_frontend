@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Typography from '@mui/material/Typography';
 import { NextPage } from 'next';
@@ -27,20 +27,22 @@ export const Home: NextPage = () => {
 
   const [tabId, setTabId] = useState<string | undefined | number>('new');
 
-
-  useEffect(() => {
+  const handleTabIdUpdate = useCallback(() => {
     const targetTab = tabs.filter(tab => tab.id === selectedTab);
 
     if (targetTab.length > 0) {
       setTabId(tabs.indexOf(targetTab[0]));
     } else {
-      setTabId(tabs.length > 0 ? Object.keys(tabs)[0] : 'new');
+      setTabId(tabs.length > 0 ? parseInt(Object.keys(tabs)[0]) : 'new');
     }
-  }, [selectedTab, tabs]);
+  }, [selectedTab, tabs])
+
 
   useEffect(() => {
-    console.log('tabId', tabId);
-  }, [tabId]);
+    handleTabIdUpdate();
+    console.log('effect:handleTabIdUpdate');
+  }, [handleTabIdUpdate]);
+
 
 
 
@@ -59,22 +61,40 @@ export const Home: NextPage = () => {
           variant="scrollable"
           scrollButtons="auto"
         >
+
           {typeof tabs !== 'undefined' && tabs.map((tab, index) => {
             return <TabWithClose key={index} label={
               tab.title
-            } onClickCloseIcon={() => {
-              setTab((typeof tabs !== undefined && tabs.length > 1) ? 'new' : 'new');
-              removeTab(tab.id);
-            }}
+            }
+              canBeClosed={tabs.length > 1}
+              onClickCloseIcon={() => {
+
+                console.log('removeTab', tab.id);
+                console.log('index', index);
+
+                const leftTab = Object.keys(tabs).length > 0 ? Object.keys(tabs)[index - 1] : undefined;
+                const rightTab = Object.keys(tabs).length > 0 ? Object.keys(tabs)[index + 1] : undefined;
+                const navigateTo: number | string = leftTab ? leftTab : rightTab ? rightTab : 'new';
+                setTabId(
+                  navigateTo
+                );
+                removeTab(tab.id);
+                // @ts-ignore
+                setTab(tabs[navigateTo].id);
+                handleTabIdUpdate();
+              }}
               tabId={tab.id}
             />
           })}
-          <Tab value='new' label='+' onClick={() => {
-            const createdTab = newTab();
-            setTab(
-              createdTab
-            );
-          }} />
+          <Tab
+            sx={{
+              backgroundColor: (theme) => theme.palette.primary.main,
+              color: (theme) => theme.palette.primary.contrastText,
+            }}
+            label='+' onClick={(e) => {
+              e.preventDefault();
+              const createdTab = newTab();
+            }} />
         </Tabs>
       </Grid>
     </Grid>
