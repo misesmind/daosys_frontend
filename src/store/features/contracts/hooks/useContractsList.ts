@@ -24,7 +24,12 @@ export const useContractsList = (props: ContractsListProps) => {
         }
     }, [all, props.filter]);
 
+    const findContract = useCallback((address: string) => {
+        return contracts.find(([contractAddress, contract]) => contractAddress === address);
+    }, [contracts]);
+
     return useMemo(() => ({
         contracts,
-    }), [contracts]);
+        findContract,
+    }), [contracts, findContract]);
 }
