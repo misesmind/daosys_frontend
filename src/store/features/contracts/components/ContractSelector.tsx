@@ -6,6 +6,7 @@ import { useContractsList } from "../hooks/useContractsList"
 import { useAppDispatch } from "@/store/hooks";
 import useTabs from "../../tabs/hooks/useTabs";
 import Button from "@/components/Button";
+import formatAddress from "@/helpers/formatAddress";
 
 export type ContractSelectorProps = {
     tabId: string | undefined | number;
@@ -20,7 +21,7 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
     const { tabs } = useTabs();
 
     const tabInfo = useMemo(() => {
-        return tabs.filter(tab => tab.id === props.tabId);
+        return tabs.find(tab => tab.id === props.tabId);
     }, [props.tabId, tabs]);
 
     const handleSelect = (address: string | undefined) => {
@@ -37,9 +38,9 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
     if (show === false) return (
         <>
             <Box>
-                <Button onClick={() => {
+                <Button variant={'text'} neon onClick={() => {
                     setShow(true);
-                }}>Change contract</Button>
+                }}>{tabInfo?.contractAddress ? formatAddress(tabInfo.contractAddress) : 'Select contract'}</Button>
             </Box>
         </>
     );
@@ -51,11 +52,11 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                     mb: 2
                 }}>
                     <Grid item xs={4}>
-                        <Typography variant="h6">Contract current</Typography>
+                        <Typography variant="h6">Current contract</Typography>
                     </Grid>
                     <Grid item xs={4}>
 
-                        <Typography variant="h6">{tabInfo[0].contractAddress}</Typography>
+                        <Typography variant="h6">{tabInfo?.contractAddress}</Typography>
                     </Grid>
                 </Grid>
                 <Grid container gap={1}>

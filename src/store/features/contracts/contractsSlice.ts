@@ -1,11 +1,14 @@
+import { MetadataSources } from "@ethereum-sourcify/contract-call-decoder";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Abi } from "viem";
-
-
 
 export type ContractItem = {
     // @ts-ignore
     abi: typeof Abi;
+    name: string | undefined;
+    metadataAvailable: boolean;
+    metadataSource: MetadataSources | undefined;
+    metadataAtChainId: number | undefined;
 }
 
 export const initialState: {
@@ -25,7 +28,6 @@ export const contractsSlice = createSlice({
         removeContract: (state, action) => {
             delete state.items[action.payload.address];
         }
-
     }
 })
 

@@ -29,6 +29,11 @@ export const useLoadContract = (
     const [loadingState, setLoadingState] = useState<ContractLoadingState>('none');
     const [contract, setContract] = useState<GetContractReturnType | undefined>(undefined);
 
+    const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(false);
+    const [contractMetdataSource, setContractMetdataSource] = useState<MetadataSources | undefined>(undefined);
+    const [metadataAtChainId, setMetadataAtChainId] = useState<number | undefined>(undefined);
+
+
     useEffect(() => {
         if (!isAddress(contractAddress)) {
             setLoadingState('invalid-address');
@@ -38,21 +43,30 @@ export const useLoadContract = (
     }, [contractAddress]);
 
     useEffect(() => {
-        if (contract) {
+        if (contract && contractAddress.length > 10) {
             setLoadingState('contract-loaded');
             dispatch(addContract({
                 address: contractAddress,
                 contract: {
                     abi: contract.abi,
+                    name: undefined,
+                    metadataAvailable: isMetadataAvailable,
+                    metadataAtChainId: metadataAtChainId,
+                    metadataSource: contractMetdataSource,
                 }
             }));;
         }
-    }, [contract, contractAddress, dispatch]);
+    }, [contract, contractAddress, contractMetdataSource, dispatch, isMetadataAvailable, metadataAtChainId]);
 
 
 
     const loadContract = useCallback(async (contractAddress: string, manualAbi: string) => {
         try {
+
+            if (contractAddress.length !== 42) {
+                return false;
+            }
+
             console.log(manualAbi);
             setLoadingState('loading-contract');
 
@@ -95,9 +109,15 @@ export const useLoadContract = (
                 setLoadingState('loading-abi');
 
                 const abi = metadata.output.abi;
+                setIsMetadataAvailable(true);
+                setMetadataAtChainId(
+                    metadataSource === MetadataSources.Sourcify ? chainId : await client.getChainId()
+                );
+                setContractMetdataSource(metadataSource);
                 setLoadingState('contract-loaded');
 
                 loadContract(contractAddress, abi);
+
             }
         } catch (e) {
             console.log(e);
