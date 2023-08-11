@@ -7,6 +7,8 @@ import { useAppSelector } from "@/store/hooks";
 import { MetadataSources, getMetadataFromAddress } from "@ethereum-sourcify/contract-call-decoder";
 import { useChainId, usePublicClient } from "wagmi";
 import { EthereumProvider } from "ethereum-provider";
+import { Grid } from "@mui/material";
+import { TabSettings } from "./TabSettings";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -65,8 +67,17 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         <>
             <Box>
                 {/* {props.tabId} */}
-
-                <ContractSelector tabId={props.tabId} />
+                <Grid container gap={0.5}>
+                    <Grid item xs={4}>
+                        <ContractSelector tabId={props.tabId} />
+                    </Grid>
+                    <Grid item xs={7.5} sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end'
+                    }}>
+                        <TabSettings tabId={props.tabId} />
+                    </Grid>
+                </Grid>
             </Box>
         </>
     );
