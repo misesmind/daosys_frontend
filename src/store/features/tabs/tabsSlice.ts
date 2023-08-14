@@ -1,3 +1,4 @@
+import store from "@/store";
 import { createSlice } from "@reduxjs/toolkit";
 import { produce } from "immer";
 
