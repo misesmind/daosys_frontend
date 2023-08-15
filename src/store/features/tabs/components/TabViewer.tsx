@@ -7,8 +7,10 @@ import { useAppSelector } from "@/store/hooks";
 import { MetadataSources, getMetadataFromAddress } from "@ethereum-sourcify/contract-call-decoder";
 import { useChainId, usePublicClient } from "wagmi";
 import { EthereumProvider } from "ethereum-provider";
-import { Grid } from "@mui/material";
+import { Divider, Grid } from "@mui/material";
 import { TabSettings } from "./TabSettings";
+import { TabInfoBlock } from "./TabInfoBlock";
+import { TabModeSwitcher } from "./TabModeSwitcher";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -78,6 +80,32 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                         <TabSettings tabId={props.tabId} />
                     </Grid>
                 </Grid>
+
+                <Divider sx={{
+                    mt: 1,
+                    mb: 1
+                }} />
+
+                <TabInfoBlock tabId={props.tabId} />
+
+
+                <Divider sx={{
+                    mt: 1,
+                    mb: 1
+                }} />
+
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}>
+
+                    <TabModeSwitcher
+                        tabId={props.tabId}
+                        currentMode={"read"}
+                        isProxy={true}
+                        onChangeMode={(mode) => console.log(mode)}
+                    />
+                </Box>
             </Box>
         </>
     );
