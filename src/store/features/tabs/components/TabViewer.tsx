@@ -88,6 +88,29 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
     }, [tabInfo, findContract, client, userChainId]);
 
 
+
+    const handleContractExecute = async (
+        method: AbiFunction,
+        params: { [key: string]: string },
+        stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
+    ) => {
+        const callParams = Object.keys(params).map((key) => params[key])
+        if (mode === "read") {
+            console.log(callParams)
+            const results = await client.readContract({
+                // @ts-ignore
+                address: contractAddress,
+                abi: contract?.abi,
+                functionName: method.name,
+                args: callParams
+            });
+
+
+            stateSetCallback({ 'default': results as unknown as string });
+        }
+    }
+
+
     if (undefined === props.tabId || 'new' === props.tabId) return (<>
         <TabAdd />
     </>);
@@ -137,11 +160,16 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
                 </Box>
 
-                {filteredMethods.map((method: AbiFunction, index: number) => {
+                {filteredMethods && filteredMethods.map((method: AbiFunction, index: number) => {
                     return (<TabMethod
-                        key={`method-${index}`}
+                        key={`method-${index}-${mode}`}
                         details={method as AbiFunction}
-                        onCall={() => { }}
+                        onCall={(
+                            params,
+                            stateSetCallback
+                        ) => {
+                            handleContractExecute(method, params, stateSetCallback);
+                        }}
                     />)
                 })}
             </Box>

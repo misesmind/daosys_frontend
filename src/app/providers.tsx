@@ -6,7 +6,7 @@ import {
     connectorsForWallets,
 } from '@rainbow-me/rainbowkit';
 
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi';
 import {
     goerli,
 } from 'wagmi/chains';
@@ -22,6 +22,7 @@ import theme from './theme';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
         rollux,
+        mainnet,
         ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
     ],
     [publicProvider()]
