@@ -1,8 +1,7 @@
 import React, { FC } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { Button, ButtonGroup } from "@mui/material";
-
-export type TabSwitcherMode = "read" | "write" | "read_as_proxy" | "write_as_proxy";
+import { TabSwitcherMode } from "../types";
 
 export type TabModeSwitcherProps = {
     tabId: string | undefined | number;
@@ -12,16 +11,16 @@ export type TabModeSwitcherProps = {
 }
 
 export const TabModeSwitcher: FC<TabModeSwitcherProps> = (props: TabModeSwitcherProps) => {
-    const { isProxy, onChangeMode } = props;
+    const { isProxy, onChangeMode, currentMode } = props;
 
     return (
         <ButtonGroup variant="contained" color="primary">
-            <Button onClick={() => onChangeMode("read")}>Read</Button>
-            <Button onClick={() => onChangeMode("write")}>Write</Button>
+            <Button variant={currentMode === 'read' ? 'contained' : 'outlined'} onClick={() => onChangeMode("read")}>Read</Button>
+            <Button variant={currentMode === 'write' ? 'contained' : 'outlined'} onClick={() => onChangeMode("write")}>Write</Button>
             {isProxy && (
                 <>
-                    <Button onClick={() => onChangeMode("read_as_proxy")}>Read as Proxy</Button>
-                    <Button onClick={() => onChangeMode("write_as_proxy")}>Write as Proxy</Button>
+                    <Button variant={currentMode === 'read_as_proxy' ? 'contained' : 'outlined'} onClick={() => onChangeMode("read_as_proxy")}>Read as Proxy</Button>
+                    <Button variant={currentMode === 'write_as_proxy' ? 'contained' : 'outlined'} onClick={() => onChangeMode("write_as_proxy")}>Write as Proxy</Button>
                 </>
             )}
         </ButtonGroup>

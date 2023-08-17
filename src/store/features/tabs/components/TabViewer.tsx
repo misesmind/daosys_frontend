@@ -1,5 +1,5 @@
 import Box from "@/components/Box";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { TabAdd } from "./TabAdd";
 import { ContractSelector } from "../../contracts/components/ContractSelector";
 import { useContractsList } from "../../contracts/hooks/useContractsList";
@@ -11,6 +11,10 @@ import { Divider, Grid } from "@mui/material";
 import { TabSettings } from "./TabSettings";
 import { TabInfoBlock } from "./TabInfoBlock";
 import { TabModeSwitcher } from "./TabModeSwitcher";
+import { TabSwitcherMode } from "../types";
+import { ContractItem } from "../../contracts/contractsSlice";
+import { TabMethod } from "./TabMethod";
+import { AbiFunction } from "abitype";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -25,6 +29,22 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
     const client = usePublicClient();
     const userChainId = useChainId();
+
+    const [mode, setMode] = useState<TabSwitcherMode>("read");
+
+    const [contractAddress, setContractAddress] = useState<string | undefined>(undefined);
+    const [contract, setContract] = useState<ContractItem | undefined>(undefined);
+
+    const filteredMethods = useMemo(() => {
+        if (undefined === contract) return [];
+
+        if (mode === "read") {
+            return contract.abi.filter((method: { stateMutability: string; }) => method.stateMutability === "view" || method.stateMutability === "pure");
+        } else if (mode === "write") {
+            return contract.abi.filter((method: { stateMutability: string; type: string; }) => method.stateMutability === "nonpayable" || method.stateMutability === "payable")
+                .filter((method: { type: string; }) => method.type === "function");
+        }  // todo implement proxy support
+    }, [contract, mode]);
 
     useEffect(() => {
 
@@ -43,6 +63,11 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         if (contract[0] === tabInfo.contractAddress) {
             // update tab
             console.log(contract[1])
+
+            setContractAddress(contract[0]);
+            setContract(contract[1]);
+
+
             const payloadLookup = {
                 address: tabInfo.contractAddress,
                 source: contract[1].metadataSource || MetadataSources.Sourcify,
@@ -51,6 +76,8 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
             }
 
             console.log(payloadLookup)
+
+
 
             getMetadataFromAddress(payloadLookup).then((metadata) => {
                 console.log(metadata);
@@ -101,11 +128,22 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
                     <TabModeSwitcher
                         tabId={props.tabId}
-                        currentMode={"read"}
+                        currentMode={mode}
                         isProxy={true}
-                        onChangeMode={(mode) => console.log(mode)}
+                        onChangeMode={(mode) => setMode(mode)}
                     />
+
+
+
                 </Box>
+
+                {filteredMethods.map((method: AbiFunction, index: number) => {
+                    return (<TabMethod
+                        key={`method-${index}`}
+                        details={method as AbiFunction}
+                        onCall={() => { }}
+                    />)
+                })}
             </Box>
         </>
     );
