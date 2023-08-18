@@ -11,7 +11,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 
 
-export const Index: NextPage = () => {
+const Page: NextPage = () => {
     const [address, setAddress] = useState<string>('')
     const [chainId, setChainId] = useState<number>(0)
     const [manualAbi, setManualAbi] = useState<string>('')
@@ -37,7 +37,10 @@ export const Index: NextPage = () => {
 
     const handleLoad = async () => {
         if (loadingState === 'metadata-not-found') {
-            loadContract(address, manualAbi);
+
+            const finalAbiArr = Array.isArray(manualAbi) ? manualAbi : JSON.parse(manualAbi);
+
+            loadContract(address, finalAbiArr);
         } else {
             loadContractMetadata(metadataSource as unknown as MetadataSources, chainId);
         }
@@ -107,6 +110,9 @@ export const Index: NextPage = () => {
                         id="outlined-basic"
                         label="Paste ABI"
                         variant="outlined"
+                        onChange={(e) => {
+                            setManualAbi(e.target.value);
+                        }}
                         fullWidth
                     />
                 </>)
@@ -151,4 +157,4 @@ export const Index: NextPage = () => {
     </>);
 }
 
-export default Index;
+export default Page;

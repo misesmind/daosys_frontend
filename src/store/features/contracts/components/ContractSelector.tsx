@@ -1,12 +1,13 @@
 'use client'
 
-import { Autocomplete, Badge, Box, Grid, TextField, Typography } from "@mui/material"
+import { Autocomplete, Badge, Box, Grid, IconButton, TextField, Typography } from "@mui/material"
 import React, { FC, useState, useMemo } from "react"
 import { useContractsList } from "../hooks/useContractsList"
 import { useAppDispatch } from "@/store/hooks";
 import useTabs from "../../tabs/hooks/useTabs";
 import Button from "@/components/Button";
 import formatAddress from "@/helpers/formatAddress";
+import { Add, CloseOutlined } from "@mui/icons-material";
 
 export type ContractSelectorProps = {
     tabId: string | undefined | number;
@@ -80,14 +81,18 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                         />
                     </Grid>
                     <Grid item xs={2}>
-                        <Button sx={{ w: '100%' }} onClick={() => {
-                        }}>Use contract</Button>
+                        <IconButton onClick={() => {
+                        }}>
+                            <Add />
+                        </IconButton>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button sx={{ w: '100%' }} onClick={() => {
+                        <IconButton onClick={() => {
                             setShow(false);
                         }
-                        }>Cancel</Button>
+                        }>
+                            <CloseOutlined />
+                        </IconButton>
                     </Grid>
 
                 </Grid>

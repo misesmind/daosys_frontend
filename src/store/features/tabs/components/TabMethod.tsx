@@ -8,11 +8,13 @@ export type TabMethodProps = {
     onCall: (
         params: { [key: string]: string },
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string; }>>,
+        setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
     ) => void;
 };
 
 export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
     const [results, setResults] = useState<{ [key: string]: string }>({});
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     // Initialize the inputs state based on the details.inputs
     const initialInputs = useMemo(() => {
@@ -25,7 +27,7 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
     const [inputs, setInputs] = useState(initialInputs);
 
     const handleCallProxy = useCallback(() => {
-        onCall(inputs, setResults);
+        onCall(inputs, setResults, setErrorMessage);
     }, [onCall, inputs]);
 
     // Updated onChange handler to use a function inside setState
@@ -47,8 +49,13 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
             <AccordionDetails>
                 {details.inputs.length > 0 && details.inputs.map((param, index) => {
                     return (
-                        <Box component="div" key={index}>
-                            <Typography variant="body1">
+                        <Box component="div" key={index} sx={{
+                            mb: 2,
+                        }}>
+                            <Typography variant="body1" sx={{
+                                mb: 2,
+                                fontWeight: 'bold',
+                            }}>
                                 {param.name} ({param.type})
                             </Typography>
                             <TextField
@@ -79,6 +86,23 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                                 </Typography>
                             );
                         })}
+                    </Box>
+                )}
+
+                {errorMessage && (
+                    <Box sx={{
+                        mt: 2,
+                        mb: 2,
+                        backgroundColor: (theme) => theme.palette.error.main,
+                        padding: 2,
+                        color: (theme) => theme.palette.error.contrastText,
+                    }}>
+                        <Typography variant="h6">
+                            Error
+                        </Typography>
+                        <Typography variant="body1">
+                            {errorMessage}
+                        </Typography>
                     </Box>
                 )}
             </AccordionDetails>
