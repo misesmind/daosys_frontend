@@ -131,6 +131,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                 } else if (typeof results === 'bigint') {
                     // @ts-ignore
                     stateSetCallback({
+                        // @ts-ignore
                         'result': results.toString()
                     })
                     return;
@@ -183,6 +184,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                 } else if (typeof results === 'bigint') {
                     // @ts-ignore
                     stateSetCallback({
+                        // @ts-ignore
                         'result': results.toString()
                     })
                     return;
