@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState, useMemo } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, TextField, Typography } from "@mui/material";
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
 
@@ -70,9 +70,19 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                     );
                 })}
 
-                <Button onClick={handleCallProxy}>
-                    Execute
-                </Button>
+                <Grid container>
+                    <Grid item xs={10}>
+                        <Button neon onClick={handleCallProxy}>
+                            Execute
+                        </Button>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button variant={'outlined'} onClick={() => { }}>
+                            Options
+                        </Button>
+                    </Grid>
+                </Grid>
+
 
                 {Object.keys(results).length > 0 && (
                     <Box>

@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 
-export const Index: NextPage = () => {
+const Index: NextPage = () => {
     return (<>
         <div>
-            <h1>Deploy</h1>
+            <h1>Deploy Contract</h1>
         </div>
     </>);
 }

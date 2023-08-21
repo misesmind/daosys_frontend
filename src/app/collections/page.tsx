@@ -9,7 +9,7 @@ import { NextPage } from 'next';
 import React, { FC, useState } from 'react';
 
 
-export const Index: NextPage = () => {
+const Index: NextPage = () => {
     const [open, setOpen] = useState(false);
 
     const handleAdd = () => {

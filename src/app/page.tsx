@@ -9,7 +9,7 @@ import { Add } from '@mui/icons-material';
 import useTabs from '@/store/features/tabs/hooks/useTabs';
 import useSelectedTab from '@/store/features/userPreferences/hooks/useSelectedTab';
 
-export const Home: NextPage = () => {
+const Home: NextPage = () => {
 
   const {
     selectTab: setTab,
