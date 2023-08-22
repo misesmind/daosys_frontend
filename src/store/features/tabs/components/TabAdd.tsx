@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { v4 } from "uuid"
+import { Box } from "@/components/Box";
+import { Typography } from "@mui/material";
 
 export type TabAddProps = {
 
@@ -8,7 +9,15 @@ export type TabAddProps = {
 export const TabAdd: FC<TabAddProps> = (props: TabAddProps) => {
     return (
         <>
-            Add new tab. {v4()}
+            <Box>
+                <Typography variant="h3">
+                    Add new Tab
+                </Typography>
+
+                <Typography variant="body1">
+                    There&apos;s no tabs yet. Add a new one to get started.
+                </Typography>
+            </Box>
         </>
     );
 }

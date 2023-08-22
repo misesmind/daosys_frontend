@@ -11,6 +11,7 @@ import { Add, CloseOutlined } from "@mui/icons-material";
 
 export type ContractSelectorProps = {
     tabId: string | undefined | number;
+    setDynamicGrid: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelectorProps) => {
@@ -41,6 +42,7 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
             <Box>
                 <Button variant={'text'} neon onClick={() => {
                     setShow(true);
+                    props.setDynamicGrid(12);
                 }}>{tabInfo?.contractAddress ? formatAddress(tabInfo.contractAddress) : 'Select contract'}</Button>
             </Box>
         </>
@@ -82,6 +84,9 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                     </Grid>
                     <Grid item xs={2}>
                         <IconButton onClick={() => {
+                            handleSelect(tabInfo?.contractAddress);
+                            setShow(false);
+                            props.setDynamicGrid(4);
                         }}>
                             <Add />
                         </IconButton>
@@ -89,6 +94,7 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                     <Grid item xs={2}>
                         <IconButton onClick={() => {
                             setShow(false);
+                            props.setDynamicGrid(4);
                         }
                         }>
                             <CloseOutlined />

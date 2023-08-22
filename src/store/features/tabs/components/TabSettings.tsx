@@ -7,6 +7,7 @@ import throttle from "lodash.throttle"
 
 export type TabSettingsProps = {
     tabId: string | undefined | number;
+
 }
 
 export const TabSettings: FC<TabSettingsProps> = (props: TabSettingsProps) => {
@@ -15,10 +16,12 @@ export const TabSettings: FC<TabSettingsProps> = (props: TabSettingsProps) => {
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
+        // props.setParentGrid(12);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
+        // props.setParentGrid(8);
     };
 
     const dispatch = useAppDispatch();

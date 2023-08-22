@@ -94,8 +94,6 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         }
     }, [tabInfo, findContract, client, userChainId]);
 
-
-
     const handleContractExecute = async (
         method: AbiFunction,
         params: { [key: string]: string },
@@ -209,6 +207,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         }
     }
 
+    const [gridValue, setGridValue] = useState<number>(4);
 
     if (undefined === props.tabId || 'new' === props.tabId) return (<>
         <TabAdd />
@@ -218,11 +217,11 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         <>
             <Box>
                 {/* {props.tabId} */}
-                <Grid container gap={0.5}>
-                    <Grid item xs={12}>
-                        <ContractSelector tabId={props.tabId} />
+                <Grid container gap={0}>
+                    <Grid item xs={gridValue}>
+                        <ContractSelector setDynamicGrid={setGridValue} tabId={props.tabId} />
                     </Grid>
-                    <Grid item xs={7.5} sx={{
+                    <Grid item xs={8} sx={{
                         display: 'flex',
                         justifyContent: 'flex-end'
                     }}>

@@ -24,6 +24,8 @@ const Home: NextPage = () => {
 
   const [tabId, setTabId] = useState<string | undefined | number>('new');
 
+
+
   const handleTabIdUpdate = useCallback(() => {
     const targetTab = tabs.filter(tab => tab.id === selectedTab);
 
@@ -33,6 +35,19 @@ const Home: NextPage = () => {
       setTabId(tabs.length > 0 ? parseInt(Object.keys(tabs)[0]) : 'new');
     }
   }, [selectedTab, tabs])
+
+  const handleNewTab = useCallback(() => {
+    const newId: number = newTab();
+    const targetTab = tabs[newId] ?? undefined;
+
+
+    if (targetTab) {
+      setTab(targetTab.id);
+    }
+
+    console.log('handleNewTab', newId);
+
+  }, [newTab, setTab, tabs]);
 
 
   useEffect(() => {
@@ -90,7 +105,7 @@ const Home: NextPage = () => {
             }}
             label='+' onClick={(e) => {
               e.preventDefault();
-              newTab();
+              handleNewTab();
             }} />
         </Tabs>
       </Grid>
