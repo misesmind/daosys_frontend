@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState, useMemo } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, TextField, Typography } from "@mui/material";
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
+import TabMethodOptions from "./TabMethodOptions";
 
 export type TabMethodProps = {
     details: AbiFunction;
@@ -38,6 +39,13 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
             [name]: value,
         }));
     };
+
+    const [options, setOptions] = useState<{ [key: string]: string | number | bigint }>({});
+
+    const handleOptionsUpdate = (options: { [key: string]: string | number | bigint }) => {
+        setOptions(options);
+    }
+
 
     return (
         <Accordion>
@@ -77,9 +85,9 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                         </Button>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant={'outlined'} onClick={() => { }}>
-                            Options
-                        </Button>
+                        <TabMethodOptions onUpdate={(options) => {
+                            handleOptionsUpdate(options);
+                        }} changed={Object.keys(options).length > 0} />
                     </Grid>
                 </Grid>
 
