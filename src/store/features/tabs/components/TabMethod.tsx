@@ -57,10 +57,6 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
         setOptions(filteredOptions);
     }
 
-    useEffect(() => {
-        console.log(options);
-    }, [options]);
-
 
     return (
         <Accordion>

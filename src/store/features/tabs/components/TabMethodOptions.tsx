@@ -34,9 +34,6 @@ export const TabMethodOptions: FC<TabMethodOptionsProps> = ({ onUpdate, changed,
         </Button>);
     }
 
-    console.log(initialValues);
-
-
     return (
         <Modal
             open={show}
