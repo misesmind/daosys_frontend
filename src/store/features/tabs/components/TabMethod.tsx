@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useMemo } from "react";
+import React, { FC, useCallback, useState, useMemo, useEffect } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, TextField, Typography } from "@mui/material";
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
@@ -42,9 +42,24 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
 
     const [options, setOptions] = useState<{ [key: string]: string | number | bigint }>({});
 
-    const handleOptionsUpdate = (options: { [key: string]: string | number | bigint }) => {
-        setOptions(options);
+    const handleOptionsUpdate = (newOptions: { [key: string]: string | number | bigint }) => {
+        const repaceOptions = ({
+            ...options, ...newOptions
+        });
+
+        const filteredOptions = Object.keys(repaceOptions).reduce((acc, key) => {
+            if (repaceOptions[key] !== '') {
+                acc[key] = repaceOptions[key];
+            }
+            return acc;
+        }, {} as { [key: string]: string | number | bigint });
+
+        setOptions(filteredOptions);
     }
+
+    useEffect(() => {
+        console.log(options);
+    }, [options]);
 
 
     return (
@@ -87,7 +102,7 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                     <Grid item xs={2}>
                         <TabMethodOptions onUpdate={(options) => {
                             handleOptionsUpdate(options);
-                        }} changed={Object.keys(options).length > 0} />
+                        }} changed={Object.keys(options).length > 0} initialValues={options} />
                     </Grid>
                 </Grid>
 
