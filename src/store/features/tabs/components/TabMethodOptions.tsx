@@ -1,6 +1,6 @@
 import Button from "@/components/Button";
 import { AlignVerticalBottom, InfoOutlined } from "@mui/icons-material";
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal, TextField, Typography } from "@mui/material";
 import React, { FC, useState } from "react"
 
 export type TabMethodOptionsProps = {
@@ -45,9 +45,20 @@ export const TabMethodOptions: FC<TabMethodOptionsProps> = ({ onUpdate, changed 
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Tx Options
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                </Typography>
+                <Box>
+                    <TextField
+                        id="gasLimit"
+                        label="Gas Limit"
+                        type="number"
+                        defaultValue={21000}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
+                        sx={{ width: '100%' }}
+                        onChange={(e) => onUpdate({ gasLimit: e.target.value })}
+                    />
+                </Box>
             </Box>
         </Modal>
     )
