@@ -173,12 +173,13 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
             }
 
             try {
-                const results = wallet.writeContract({
+                const results = await wallet.writeContract({
                     // @ts-ignore
                     address: contractAddress,
                     abi: contract?.abi,
                     functionName: method.name,
-                    args: callParams
+                    args: callParams,
+                    ...(options ? { ...options } : {})
                 });
 
                 console.log(results)
