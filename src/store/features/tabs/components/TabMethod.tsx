@@ -10,12 +10,11 @@ export type TabMethodProps = {
         params: { [key: string]: string },
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string; }>>,
         setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
+        options?: { [key: string]: string | number | bigint },
     ) => void;
 };
 
 export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
-    const [results, setResults] = useState<{ [key: string]: string }>({});
-    const [errorMessage, setErrorMessage] = useState<string>('');
 
     // Initialize the inputs state based on the details.inputs
     const initialInputs = useMemo(() => {
@@ -25,11 +24,16 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
         }, {} as { [key: string]: string });
     }, [details.inputs]);
 
+
+    const [results, setResults] = useState<{ [key: string]: string }>({});
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [options, setOptions] = useState<{ [key: string]: string | number | bigint }>({});
     const [inputs, setInputs] = useState(initialInputs);
 
+
     const handleCallProxy = useCallback(() => {
-        onCall(inputs, setResults, setErrorMessage);
-    }, [onCall, inputs]);
+        onCall(inputs, setResults, setErrorMessage, options);
+    }, [onCall, inputs, options]);
 
     // Updated onChange handler to use a function inside setState
     // to ensure we are working with the latest state
@@ -39,8 +43,6 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
             [name]: value,
         }));
     };
-
-    const [options, setOptions] = useState<{ [key: string]: string | number | bigint }>({});
 
     const handleOptionsUpdate = (newOptions: { [key: string]: string | number | bigint }) => {
         const repaceOptions = ({

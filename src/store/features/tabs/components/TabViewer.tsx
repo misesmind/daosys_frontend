@@ -15,6 +15,7 @@ import { TabSwitcherMode } from "../types";
 import { ContractItem } from "../../contracts/contractsSlice";
 import { TabMethod } from "./TabMethod";
 import { AbiFunction } from "abitype";
+import { Tab, setTabContractAddress } from "../tabsSlice";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -25,7 +26,9 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
     // tab updater
 
     const { findContract } = useContractsList({});
-    const tabInfo = useAppSelector(state => state.tabsSlice.tabs.find(tab => tab.id === props.tabId));
+    const allTabs = useAppSelector(state => state.tabsSlice.tabs);
+
+    const [tabInfo, setTabInfo] = useState<Tab | undefined>(undefined);
 
     const client = usePublicClient();
     const { data: wallet } = useWalletClient();
@@ -38,42 +41,56 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
     const filteredMethods = useMemo(() => {
         if (undefined === contract) return [];
-        if ('' === contract.abi) return [];
-
-        console.log(contract.abi);
+        if ('' === contract.abi || !contractAddress) return [];
 
         if (mode === "read") {
-
             return contract.abi.filter((method: { stateMutability: string; }) => method.stateMutability === "view" || method.stateMutability === "pure") ?? [];
         } else if (mode === "write") {
             return contract.abi.filter((method: { stateMutability: string; type: string; }) => method.stateMutability === "nonpayable" || method.stateMutability === "payable")
                 .filter((method: { type: string; }) => method.type === "function") ?? [];
         }  // todo implement proxy support
-    }, [contract, mode]);
+    }, [contract, mode, contractAddress]);
+
+    useEffect(() => {
+        if (undefined === props.tabId || 'new' === props.tabId) return;
+
+        const tab = allTabs.filter((tab) => tab.id === props.tabId);
+        if (tab.length > 0) {
+            setTabInfo(tab[0]);
+            setContractAddress(tab[0].contractAddress);
+        } else {
+            console.log('flush')
+            setTabInfo(undefined);
+            setContractAddress(undefined);
+        }
+    }, [props.tabId, allTabs]);
 
     useEffect(() => {
 
-        if (undefined === tabInfo) return;
-        console.log(1)
-        if (undefined === tabInfo.contractAddress) return;
-        console.log(11)
+        if (undefined === tabInfo) {
+            console.log('No tab found for given tabId.');
+            return;
+        }
+
+        if (undefined === tabInfo.contractAddress || '' === tabInfo.contractAddress) {
+            setContract(undefined);
+            console.log('No contract address found for given tab.');
+            return;
+        };
 
         const contract = findContract(tabInfo.contractAddress);
-        console.log(11)
 
-        if (undefined === contract) return;
-        console.log(21)
+        if (undefined === contract) {
+            console.log('No contract found for given tab.');
+            return;
+        };
 
 
         if (contract[0] === tabInfo.contractAddress) {
             // update tab
-            console.log(contract[1])
 
             setContractAddress(contract[0]);
             setContract(contract[1]);
-
-
-
 
             const payloadLookup = {
                 address: tabInfo.contractAddress,
@@ -81,10 +98,6 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                 ...(contract[1].metadataSource === MetadataSources.Sourcify ? { chainId: contract[1].metadataAtChainId || userChainId } : {}),
                 ...(contract[1].metadataSource === MetadataSources.BytecodeMetadata ? { rpcProvider: client as unknown as EthereumProvider } : {})
             }
-
-            console.log(payloadLookup)
-
-
 
             getMetadataFromAddress(payloadLookup).then((metadata) => {
                 console.log(metadata);
@@ -98,7 +111,8 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         method: AbiFunction,
         params: { [key: string]: string },
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>,
-        setErrorCallback: React.Dispatch<React.SetStateAction<string>>
+        setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
+        options?: { [key: string]: string | number | bigint },
     ) => {
         const callParams = Object.keys(params).map((key) => params[key])
         if (mode === "read") {
@@ -109,7 +123,8 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                     address: contractAddress,
                     abi: contract?.abi,
                     functionName: method.name,
-                    args: callParams
+                    args: callParams,
+                    ...(options ? { ...options } : {})
                 });
 
 
@@ -265,9 +280,16 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                         onCall={(
                             params,
                             stateSetCallback,
-                            setErrorCallback
+                            setErrorCallback,
+                            options
                         ) => {
-                            handleContractExecute(method, params, stateSetCallback, setErrorCallback);
+                            handleContractExecute(
+                                method,
+                                params,
+                                stateSetCallback,
+                                setErrorCallback,
+                                options
+                            );
                         }}
                     />)
                 })}
