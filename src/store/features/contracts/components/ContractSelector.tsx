@@ -59,7 +59,7 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                     </Grid>
                     <Grid item xs={4}>
 
-                        <Typography variant="h6">{tabInfo?.contractAddress}</Typography>
+                        <Typography variant="h6">{formatAddress(tabInfo?.contractAddress || '')}</Typography>
                     </Grid>
                 </Grid>
                 <Grid container gap={1}>
@@ -73,11 +73,11 @@ export const ContractSelector: FC<ContractSelectorProps> = (props: ContractSelec
                             id="contract-selector"
                             options={contracts}
                             renderInput={(params) => <TextField {...params} label="Select contract" />}
-                            getOptionLabel={(option) => option[0]}
+                            getOptionLabel={(option) => `${option[1].name} - ${formatAddress(option[0])} `}
                             isOptionEqualToValue={(option, value) => option[0] === value?.[0]}
                             renderOption={(props, option) => (
                                 <li {...props} key={option[0]}>
-                                    {option[0]}
+                                    {`${option[1].name} - ${formatAddress(option[0])}`}
                                 </li>
                             )}
                         />

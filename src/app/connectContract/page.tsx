@@ -21,7 +21,7 @@ const Page: NextPage = () => {
         loadingState,
         loadContract,
         resetState
-    } = useLoadContract(address);
+    } = useLoadContract(address, contractName);
 
     const client = usePublicClient();
 
