@@ -3,6 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, TextField, Ty
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
 import TabMethodOptions from "./TabMethodOptions";
+import TabMethodEvents from "./TabMethodEvents";
 
 export type TabMethodProps = {
     details: AbiFunction;
@@ -10,6 +11,7 @@ export type TabMethodProps = {
         params: { [key: string]: string },
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string; }>>,
         setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
+        setTxHash: React.Dispatch<React.SetStateAction<string | undefined>>,
         options?: { [key: string]: string | number | bigint },
     ) => void;
 };
@@ -30,9 +32,11 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
     const [options, setOptions] = useState<{ [key: string]: string | number | bigint }>({});
     const [inputs, setInputs] = useState(initialInputs);
 
+    const [txHash, setTxHash] = useState<string | undefined>(undefined);
+
 
     const handleCallProxy = useCallback(() => {
-        onCall(inputs, setResults, setErrorMessage, options);
+        onCall(inputs, setResults, setErrorMessage, setTxHash, options);
     }, [onCall, inputs, options]);
 
     // Updated onChange handler to use a function inside setState
@@ -136,6 +140,8 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                         </Typography>
                     </Box>
                 )}
+
+                {txHash && <TabMethodEvents txHash={txHash} />}
             </AccordionDetails>
         </Accordion>
     );

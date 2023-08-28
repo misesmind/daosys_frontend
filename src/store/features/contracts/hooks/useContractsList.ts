@@ -7,7 +7,7 @@ export interface ContractsListProps {
     filter?: string,
 }
 
-export const useContractsList = (props: ContractsListProps) => {
+export const useContractsList = (props: ContractsListProps = {}) => {
     const all = useAppSelector(state => state.contractsSlice.items);
 
     const contracts = useMemo(() => {

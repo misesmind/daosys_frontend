@@ -112,6 +112,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         params: { [key: string]: string },
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>,
         setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
+        setTxHash: React.Dispatch<React.SetStateAction<string | undefined>>,
         options?: { [key: string]: string | number | bigint },
     ) => {
         const callParams = Object.keys(params).map((key) => params[key])
@@ -173,44 +174,50 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
             }
 
             try {
-                const results = await wallet.writeContract({
-                    // @ts-ignore
+                const _paramsCall = {
                     address: contractAddress,
                     abi: contract?.abi,
                     functionName: method.name,
                     args: callParams,
-                    ...(options ? { ...options } : {})
-                });
+                };
 
+                console.log(_paramsCall);
+
+                const results = await wallet.writeContract(
+                    // @ts-ignore
+                    _paramsCall,
+                );
+
+                setTxHash(results);
                 console.log(results)
                 console.log(typeof results)
 
-                if (typeof results === "boolean") {
-                    stateSetCallback({ 'result': results === true ? "True" : "False" });
-                    return;
-                } else if (typeof results === "string") {
-                    stateSetCallback({ 'result': results });
-                    return;
-                } else if (typeof results === "number") {
-                    // @ts-ignore
-                    stateSetCallback({ 'result': results?.toString() });
-                    return;
-                } else if (typeof results === 'bigint') {
-                    // @ts-ignore
-                    stateSetCallback({
-                        // @ts-ignore
-                        'result': results.toString()
-                    })
-                    return;
-                } else if (typeof results === "object") {
-                    stateSetCallback(results as unknown as { [key: string]: string });
-                    return;
-                } else if (Array.isArray(results)) {
-                    // @ts-ignore
-                    stateSetCallback(results.map((item: string) => item.toString()) as unknown as { [key: string]: string });
-                } else {
-                    stateSetCallback({ 'result': results as unknown as string });
-                }
+                // if (typeof results === "boolean") {
+                //     stateSetCallback({ 'result': results === true ? "True" : "False" });
+                //     return;
+                // } else if (typeof results === "string") {
+                //     stateSetCallback({ 'result': results });
+                //     return;
+                // } else if (typeof results === "number") {
+                //     // @ts-ignore
+                //     stateSetCallback({ 'result': results?.toString() });
+                //     return;
+                // } else if (typeof results === 'bigint') {
+                //     // @ts-ignore
+                //     stateSetCallback({
+                //         // @ts-ignore
+                //         'result': results.toString()
+                //     })
+                //     return;
+                // } else if (typeof results === "object") {
+                //     stateSetCallback(results as unknown as { [key: string]: string });
+                //     return;
+                // } else if (Array.isArray(results)) {
+                //     // @ts-ignore
+                //     stateSetCallback(results.map((item: string) => item.toString()) as unknown as { [key: string]: string });
+                // } else {
+                //     stateSetCallback({ 'result': results as unknown as string });
+                // }
             } catch (err: any) {
                 console.log(err);
 
@@ -276,12 +283,13 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
                 {filteredMethods && filteredMethods.map((method: AbiFunction, index: number) => {
                     return (<TabMethod
-                        key={`method-${index}-${mode}`}
+                        key={`method-${index}-${mode}-${contractAddress}`}
                         details={method as AbiFunction}
                         onCall={(
                             params,
                             stateSetCallback,
                             setErrorCallback,
+                            setTxHash,
                             options
                         ) => {
                             handleContractExecute(
@@ -289,6 +297,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                                 params,
                                 stateSetCallback,
                                 setErrorCallback,
+                                setTxHash,
                                 options
                             );
                         }}
