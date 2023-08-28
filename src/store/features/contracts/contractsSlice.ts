@@ -22,7 +22,6 @@ export const contractsSlice = createSlice({
     initialState,
     reducers: {
         addContract: (state, action: PayloadAction<{ address: string; contract: ContractItem }>) => {
-            console.log(action.payload);
             state.items[action.payload.address] = action.payload.contract;
         },
         removeContract: (state, action) => {

@@ -181,7 +181,8 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                     args: callParams,
                 };
 
-                console.log(_paramsCall);
+                setTxHash(undefined);
+
 
                 const results = await wallet.writeContract(
                     // @ts-ignore
@@ -189,8 +190,6 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                 );
 
                 setTxHash(results);
-                console.log(results)
-                console.log(typeof results)
 
                 // if (typeof results === "boolean") {
                 //     stateSetCallback({ 'result': results === true ? "True" : "False" });

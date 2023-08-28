@@ -20,6 +20,7 @@ export type ContractLoadingState =
 
 export const useLoadContract = (
     contractAddress: string,
+    contractName?: string | undefined
 ) => {
     const client = usePublicClient();
     const wallet = useWalletClient();
@@ -49,14 +50,14 @@ export const useLoadContract = (
                 address: contractAddress,
                 contract: {
                     abi: contract.abi,
-                    name: undefined,
+                    name: contractName || undefined,
                     metadataAvailable: isMetadataAvailable,
                     metadataAtChainId: metadataAtChainId,
                     metadataSource: contractMetdataSource,
                 }
             }));;
         }
-    }, [contract, contractAddress, contractMetdataSource, dispatch, isMetadataAvailable, metadataAtChainId]);
+    }, [contract, contractAddress, contractMetdataSource, contractName, dispatch, isMetadataAvailable, metadataAtChainId]);
 
 
 

@@ -3,8 +3,10 @@ import React, { FC, useState, useEffect, useCallback } from "react";
 import { Transaction, TransactionReceipt, decodeEventLog } from "viem";
 import { usePublicClient, useWaitForTransaction } from "wagmi";
 import { Box } from "@/components/Box";
+import { Box as MBox } from "@mui/material";
 import useSelectedTab from "../../userPreferences/hooks/useSelectedTab";
 import { useSelectedContract } from "../../contracts/hooks/useSelectedContract";
+import { CheckCircle, Info } from "@mui/icons-material";
 
 export type TabMethodEventsProps = {
     txHash: string;
@@ -59,7 +61,6 @@ const TableItemArray: FC<{ label: string, value: {} | readonly [] }> = ({ label,
 
 
 export const TabMethodEvents: FC<TabMethodEventsProps> = ({ txHash }) => {
-    const publicClient = usePublicClient();
 
     const [showDetails, setShowDetails] = useState<boolean>(false);
 
@@ -105,6 +106,7 @@ export const TabMethodEvents: FC<TabMethodEventsProps> = ({ txHash }) => {
             <Box sx={{
                 mt: 5
             }}>
+
                 <Typography variant="h6">Waiting for transaction confirmation</Typography>
             </Box>
         </>);
@@ -185,12 +187,21 @@ export const TabMethodEvents: FC<TabMethodEventsProps> = ({ txHash }) => {
         <Box sx={{
             mt: 5
         }}>
-            <Typography variant="h6">
-                Transaction Confirmed!
-            </Typography>
-
-            <Button variant={'contained'} onClick={() => setShowDetails(true)} color={'success'}>Tx Details</Button>
-
+            <Grid container>
+                <Grid item xs={8}>
+                    <Typography variant="h6">
+                        <MBox component="span" display="flex" alignItems="center">
+                            <CheckCircle color="success" style={{ marginRight: '8px' }} />
+                            Transaction Details
+                        </MBox>
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant={'contained'} color={'success'} onClick={() => setShowDetails(true)}>
+                        Show Details
+                    </Button>
+                </Grid>
+            </Grid>
         </Box>
     </>);
 }

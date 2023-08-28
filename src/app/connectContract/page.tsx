@@ -15,6 +15,7 @@ const Page: NextPage = () => {
     const [address, setAddress] = useState<string>('')
     const [chainId, setChainId] = useState<number>(0)
     const [manualAbi, setManualAbi] = useState<string>('')
+    const [contractName, setContractName] = useState<string | undefined>(undefined);
     const {
         loadContractMetadata,
         loadingState,
@@ -99,6 +100,18 @@ const Page: NextPage = () => {
                         />
                     </FormControl>
                 </Grid>
+                <Grid xs={4} item>
+                    <FormControl fullWidth sx={{ mt: 3 }}>
+                        <TextField
+                            onChange={(e) => setContractName(e.target.value.length > 0 ? e.target.value : undefined)}
+                            value={contractName || ''}
+                            id="contract-name"
+                            label="Contract Name"
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </FormControl>
+                </Grid>
             </Grid>
 
             {loadingState === 'metadata-not-found' &&
@@ -145,6 +158,7 @@ const Page: NextPage = () => {
                         setMetadataSource('');
                         setChainId(await client.getChainId() ?? 1);
                         setManualAbi('');
+                        setContractName(undefined);
                         resetState();
                     }}
                 >
