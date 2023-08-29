@@ -1,9 +1,12 @@
 import React, { FC, useCallback, useState, useMemo, useEffect } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, Grid, TextField, Typography } from "@mui/material";
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
 import TabMethodOptions from "./TabMethodOptions";
 import TabMethodEvents from "./TabMethodEvents";
+import { ArrowRight, ExpandMore, ExpandOutlined } from "@mui/icons-material";
+import { Box as CustomBox } from "@/components/Box";
+
 
 export type TabMethodProps = {
     details: AbiFunction;
@@ -65,52 +68,88 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
 
 
     return (
-        <Accordion>
-            <AccordionSummary>
-                <Typography variant="h6">
-                    {details.name}
-                </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                {details.inputs.length > 0 && details.inputs.map((param, index) => {
-                    return (
-                        <Box component="div" key={index} sx={{
-                            mb: 2,
-                        }}>
-                            <Typography variant="body1" sx={{
-                                mb: 2,
-                                fontWeight: 'bold',
-                            }}>
-                                {param.name} ({param.type})
-                            </Typography>
-                            <TextField
-                                key={index}
-                                label={param.name}
-                                variant="outlined"
-                                onChange={(e) => {
-                                    handleInputChange(param.name as string, e.target.value);
-                                }}
-                            />
-                        </Box>
-                    );
-                })}
+        <Accordion
 
+        >
+            <AccordionSummary
+                expandIcon={<ExpandMore />}
+            >
                 <Grid container>
                     <Grid item xs={10}>
-                        <Button neon onClick={handleCallProxy}>
-                            Execute
-                        </Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <TabMethodOptions onUpdate={(options) => {
-                            handleOptionsUpdate(options);
-                        }} changed={Object.keys(options).length > 0} initialValues={options} />
+                        <Box component={'span'} sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}>
+                            <ArrowRight sx={{
+                                mr: 2,
+                            }} />
+                            <Typography variant="h6">
+                                {details.name}
+                            </Typography>
+                        </Box>
                     </Grid>
                 </Grid>
+            </AccordionSummary>
+            <AccordionDetails>
+                <CustomBox>
+                    <Box>
+                        <Typography textAlign={'center'} variant="h6">
+                            Call method
+                        </Typography>
+                    </Box>
+
+                    <Divider />
+
+                    {details.inputs.length > 0 && details.inputs.map((param, index) => {
+                        return (
+                            <Box component="div" key={index} sx={{
+                                mb: 2,
+                            }}>
+                                <Typography variant="body1" sx={{
+                                    mb: 2,
+                                    fontWeight: 'bold',
+                                }}>
+                                    {param.name} ({param.type})
+                                </Typography>
+                                <TextField
+                                    key={index}
+                                    label={param.name}
+                                    variant="outlined"
+                                    onChange={(e) => {
+                                        handleInputChange(param.name as string, e.target.value);
+                                    }}
+                                />
+                            </Box>
+                        );
+                    })}
+
+                    <Grid container sx={{
+                        mt: 3
+                    }}>
+                        <Grid item xs={10}>
+                            <Button neon onClick={handleCallProxy}>
+                                Execute
+                            </Button>
+                        </Grid>
+                        <Grid item xs={2} sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                        }}>
+                            <TabMethodOptions onUpdate={(options) => {
+                                handleOptionsUpdate(options);
+                            }} changed={Object.keys(options).length > 0} initialValues={options} />
+                        </Grid>
+                    </Grid>
+
+                </CustomBox>
 
 
                 {Object.keys(results).length > 0 && (
-                    <Box>
+                    <CustomBox
+                        sx={{
+                            mt: 2,
+                        }}
+                    >
                         <Typography variant="h6">
                             Results
                         </Typography>
@@ -121,7 +160,7 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                                 </Typography>
                             );
                         })}
-                    </Box>
+                    </CustomBox>
                 )}
 
                 {errorMessage && (

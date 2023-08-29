@@ -1,6 +1,5 @@
-import Button from "@/components/Button";
 import { AlignVerticalBottom, InfoOutlined } from "@mui/icons-material";
-import { Box, Modal, TextField, Typography } from "@mui/material";
+import { Box, Modal, TextField, Typography, Button } from "@mui/material";
 import React, { FC, useState } from "react"
 
 export type TabMethodOptionsProps = {
@@ -29,7 +28,7 @@ export const TabMethodOptions: FC<TabMethodOptionsProps> = ({ onUpdate, changed,
     const handleOpen = () => setShow(true);
 
     if (!show) {
-        return (<Button neon onClick={handleOpen}>
+        return (<Button variant="contained" color="info" onClick={handleOpen}>
             Options {changed ? <InfoOutlined sx={{ color: 'red', fontSize: 'sm' }} /> : ''}
         </Button>);
     }
@@ -117,7 +116,7 @@ export const TabMethodOptions: FC<TabMethodOptionsProps> = ({ onUpdate, changed,
                         onChange={(e) => onUpdate({ value: e.target.value })}
                     />
 
-                    <Button onClick={handleClose} sx={{ width: '100%' }}>Save & Close</Button>
+                    <Button variant="contained" color="success" onClick={handleClose} sx={{ width: '100%' }}>Save & Close</Button>
                 </Box>
             </Box>
         </Modal>
