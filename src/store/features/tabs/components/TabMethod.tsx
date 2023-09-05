@@ -1,11 +1,12 @@
 import React, { FC, useCallback, useState, useMemo, useEffect } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, FormControl, FormControlLabel, Grid, Switch, TextField, Typography } from "@mui/material";
 import { AbiFunction } from "abitype";
 import Button from "@/components/Button";
 import TabMethodOptions from "./TabMethodOptions";
 import TabMethodEvents from "./TabMethodEvents";
 import { ArrowRight, ExpandMore, ExpandOutlined } from "@mui/icons-material";
 import { Box as CustomBox } from "@/components/Box";
+import { AbiEncoder } from "@/components/AbiEncoder";
 
 
 export type TabMethodProps = {
@@ -15,6 +16,7 @@ export type TabMethodProps = {
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string; }>>,
         setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
         setTxHash: React.Dispatch<React.SetStateAction<string | undefined>>,
+        staticCall: boolean,
         options?: { [key: string]: string | number | bigint },
     ) => void;
 };
@@ -37,10 +39,17 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
 
     const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
+    const [staticCall, setStaticCall] = useState<boolean>(false);
+
 
     const handleCallProxy = useCallback(() => {
-        onCall(inputs, setResults, setErrorMessage, setTxHash, options);
-    }, [onCall, inputs, options]);
+        onCall(inputs, setResults, setErrorMessage, setTxHash, staticCall, options);
+    }, [onCall, inputs, staticCall, options]);
+
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setStaticCall(event.target.checked);
+    }
+
 
     // Updated onChange handler to use a function inside setState
     // to ensure we are working with the latest state
@@ -113,12 +122,25 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                                 </Typography>
                                 <TextField
                                     key={index}
-                                    label={param.name}
+
                                     variant="outlined"
+                                    value={inputs[param.name as string]}
                                     onChange={(e) => {
                                         handleInputChange(param.name as string, e.target.value);
                                     }}
                                 />
+                                <AbiEncoder onResultCallback={(result) => {
+                                    console.log(result);
+                                    handleInputChange(param.name as string, result);
+                                }}
+                                    onOpen={() => {
+                                        console.log('open');
+                                    }}
+                                    onClose={() => {
+                                        console.log('close');
+                                    }}
+                                />
+
                             </Box>
                         );
                     })}
@@ -126,10 +148,22 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
                     <Grid container sx={{
                         mt: 3
                     }}>
-                        <Grid item xs={10}>
+                        <Grid item xs={8}>
                             <Button neon onClick={handleCallProxy}>
                                 Execute
                             </Button>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <FormControlLabel
+                                control={
+                                    <Switch onChange={handleSwitchChange}
+                                        checked={staticCall}
+                                    />
+                                }
+
+                                label="Static"
+                            />
+
                         </Grid>
                         <Grid item xs={2} sx={{
                             display: 'flex',

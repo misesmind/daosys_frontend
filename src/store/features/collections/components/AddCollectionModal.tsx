@@ -11,6 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import React, { FC, useState, useEffect, use, useCallback } from "react"
+import { preload } from "react-dom";
 
 export interface AddCollectionModalProps {
     open: boolean;
@@ -21,11 +22,17 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({ open, onClose 
     const [collectionName, setCollectionName] = useState<string>("")
     const [error, setError] = useState<string>('')
 
+    const [preloadUrl, setPreloadUrl] = useState<string>('');
+
     const collections = useAppSelector(state => state.collectionsSlice.items);
     const dispatch = useAppDispatch();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCollectionName(event.target.value);
+    };
+
+    const handleChangePreloadUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPreloadUrl(event.target.value);
     };
 
     const handleAddCollection = () => {
@@ -37,6 +44,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({ open, onClose 
         })
 
         setCollectionName('')
+        setPreloadUrl('');
         setError('')
     }
 
@@ -81,6 +89,19 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({ open, onClose 
                                 helperText={error ?? 'Enter a name for your collection'}
                                 onChange={handleChange}
                                 value={collectionName}
+                                error={error !== ''}
+                            />
+                        </FormControl>
+
+                        <FormControl fullWidth sx={{
+                            marginTop: 5,
+                        }}>
+                            <TextField
+                                id="preload-url"
+                                label="Collection Source URL"
+                                variant="outlined"
+                                onChange={handleChangePreloadUrl}
+                                value={preloadUrl}
                                 error={error !== ''}
                             />
                         </FormControl>
