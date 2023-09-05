@@ -16,6 +16,8 @@ import { ContractItem } from "../../contracts/contractsSlice";
 import { TabMethod } from "./TabMethod";
 import { AbiFunction } from "abitype";
 import { Tab, setTabContractAddress } from "../tabsSlice";
+import { SimulateContractReturnType } from "viem";
+import { Simulate } from "react-dom/test-utils";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -113,6 +115,7 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
         stateSetCallback: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>,
         setErrorCallback: React.Dispatch<React.SetStateAction<string>>,
         setTxHash: React.Dispatch<React.SetStateAction<string | undefined>>,
+        staticCall: boolean,
         options?: { [key: string]: string | number | bigint },
     ) => {
         const callParams = Object.keys(params).map((key) => params[key])
@@ -184,39 +187,27 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                 setTxHash(undefined);
 
 
-                const results = await wallet.writeContract(
-                    // @ts-ignore
-                    _paramsCall,
-                );
+                const results = staticCall ?
+                    await client.simulateContract(
+                        // @ts-ignore
+                        ..._paramsCall,
+                        wallet
+                    ) :
+                    await wallet.writeContract(
+                        // @ts-ignore
+                        _paramsCall,
+                    );
 
-                setTxHash(results);
+                setErrorCallback('');
 
-                // if (typeof results === "boolean") {
-                //     stateSetCallback({ 'result': results === true ? "True" : "False" });
-                //     return;
-                // } else if (typeof results === "string") {
-                //     stateSetCallback({ 'result': results });
-                //     return;
-                // } else if (typeof results === "number") {
-                //     // @ts-ignore
-                //     stateSetCallback({ 'result': results?.toString() });
-                //     return;
-                // } else if (typeof results === 'bigint') {
-                //     // @ts-ignore
-                //     stateSetCallback({
-                //         // @ts-ignore
-                //         'result': results.toString()
-                //     })
-                //     return;
-                // } else if (typeof results === "object") {
-                //     stateSetCallback(results as unknown as { [key: string]: string });
-                //     return;
-                // } else if (Array.isArray(results)) {
-                //     // @ts-ignore
-                //     stateSetCallback(results.map((item: string) => item.toString()) as unknown as { [key: string]: string });
-                // } else {
-                //     stateSetCallback({ 'result': results as unknown as string });
-                // }
+                if (staticCall) {
+                    const resultObj = results as SimulateContractReturnType;
+                    stateSetCallback({ 'result': resultObj.result?.toString() || '' });
+                } else {
+
+                    setTxHash(results as string);
+                }
+
             } catch (err: any) {
                 console.log(err);
 
