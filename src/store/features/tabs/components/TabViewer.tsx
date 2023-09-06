@@ -18,6 +18,7 @@ import { AbiFunction } from "abitype";
 import { Tab, setTabContractAddress } from "../tabsSlice";
 import { SimulateContractReturnType } from "viem";
 import { Simulate } from "react-dom/test-utils";
+import { useHistory } from "../../history/hooks/useHistory";
 
 export type TabViewerProps = {
     tabId: string | undefined | number;
@@ -40,6 +41,11 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
     const [contractAddress, setContractAddress] = useState<string | undefined>(undefined);
     const [contract, setContract] = useState<ContractItem | undefined>(undefined);
+
+    const {
+        addRead,
+        addWrite
+    } = useHistory();
 
     const filteredMethods = useMemo(() => {
         if (undefined === contract) return [];
@@ -133,7 +139,15 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
 
 
                 console.log(results)
-                console.log(typeof results)
+
+                addRead(
+                    contractAddress as string,
+                    method.name,
+                    wallet?.account.address || '',
+                    callParams,
+                );
+
+
 
                 if (typeof results === "boolean") {
                     stateSetCallback({ 'result': results === true ? "True" : "False" });
@@ -204,6 +218,15 @@ export const TabViewer: FC<TabViewerProps> = (props: TabViewerProps) => {
                     const resultObj = results as SimulateContractReturnType;
                     stateSetCallback({ 'result': resultObj.result?.toString() || '' });
                 } else {
+
+                    addWrite(
+                        contractAddress as string,
+                        method.name,
+                        wallet?.account.address || '',
+                        callParams,
+                        results as string
+                    );
+
 
                     setTxHash(results as string);
                 }

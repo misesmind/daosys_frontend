@@ -7,6 +7,7 @@ import TabMethodEvents from "./TabMethodEvents";
 import { ArrowRight, ExpandMore, ExpandOutlined } from "@mui/icons-material";
 import { Box as CustomBox } from "@/components/Box";
 import { AbiEncoder } from "@/components/AbiEncoder";
+import { useHistory } from "../../history/hooks/useHistory";
 
 
 export type TabMethodProps = {
@@ -30,6 +31,7 @@ export const TabMethod: FC<TabMethodProps> = ({ details, onCall }) => {
             return acc;
         }, {} as { [key: string]: string });
     }, [details.inputs]);
+
 
 
     const [results, setResults] = useState<{ [key: string]: string }>({});
